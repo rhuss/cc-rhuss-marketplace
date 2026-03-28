@@ -33,12 +33,12 @@
       "category": "security"
     },
     {
-      "name": "superpowers-sdd",
-      "source": "github:rhuss/cc-superpowers-sdd",
+      "name": "spex",
+      "source": "github:rhuss/cc-spex",
       "description": "Specification-Driven Development with Process Discipline for Claude Code",
       "version": "1.0.0",
       "author": {
-        "name": "Roland Huss",
+        "name": "Roland Huß",
         "email": "rhuss@redhat.com"
       },
       "keywords": [
@@ -47,11 +47,36 @@
         "specification-driven-development",
         "sdd",
         "specs",
-        "test-driven-development",
-        "tdd",
+        "brainstorm",
+        "review",
+        "verification",
         "process-discipline",
         "quality-gates",
-        "superpowers"
+        "spec-evolution",
+        "worktree"
+      ],
+      "category": "development"
+    },
+    {
+      "name": "prose",
+      "source": "github:rhuss/cc-prose",
+      "description": "Write natural, human-sounding prose with AI pattern detection, voice profiles, and style enforcement",
+      "version": "0.1.0",
+      "author": {
+        "name": "Roland Huß",
+        "email": "rhuss@redhat.com"
+      },
+      "keywords": [
+        "writing",
+        "prose",
+        "voice-profiles",
+        "ai-detection",
+        "humanizer",
+        "style-enforcement",
+        "content-generation",
+        "rewriting",
+        "tone",
+        "clarity"
       ],
       "category": "development"
     },

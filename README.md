@@ -23,23 +23,43 @@ Turn security requirements into actionable code assessments. Provide a threat de
 
 [→ View Plugin Documentation](https://github.com/rhuss/cc-threat-model-assessment)
 
-### 📋 superpowers-sdd
+### 📋 spex
 
-Specification-Driven Development with Process Discipline for Claude Code. This plugin extends the superpowers framework with skills and workflows for specification-driven development, ensuring code is built according to well-defined specifications.
+Specification-Driven Development with Process Discipline for Claude Code. Refine rough ideas into executable specifications through collaborative brainstorming, then implement with structured workflows, quality gates, and spec compliance verification.
 
 **How it works:**
-1. Define specifications before writing code
-2. Use built-in skills to guide the development process
-3. Apply process discipline with quality gates
-4. Ensure code matches specifications through structured workflows
+1. Brainstorm and refine ideas into executable specifications
+2. Review specs for soundness, completeness, and implementability
+3. Plan implementation with coverage validation and red flag scanning
+4. Implement in isolated worktrees with spec guardian review
+5. Verify spec compliance and evolve specs when code diverges
 
 **Perfect for:**
 - Teams practicing specification-driven development
 - Projects requiring formal specification documentation
-- Developers who want structured development workflows
-- Organizations implementing quality gates in their development process
+- Developers who want structured, spec-first workflows
+- Organizations implementing quality gates and compliance checks
 
-[→ View Plugin Documentation](https://github.com/rhuss/cc-superpowers-sdd)
+[→ View Plugin Documentation](https://github.com/rhuss/cc-spex)
+
+### ✍️ prose
+
+Write natural, human-sounding prose with AI pattern detection, voice profiles, and style enforcement. Catches and removes 24 categories of AI writing indicators to produce authentic content.
+
+**How it works:**
+1. Initialize style configuration with /prose:init
+2. Create or extract voice profiles from writing samples
+3. Generate new content with style enforcement and voice consistency
+4. Validate content against AI pattern checklist before publishing
+5. Rewrite existing text to remove AI-generated artifacts
+
+**Perfect for:**
+- Technical writers who want natural-sounding documentation
+- Blog authors maintaining a consistent personal voice
+- Content creators who need AI assistance without AI fingerprints
+- Anyone reviewing text for unintentional AI patterns
+
+[→ View Plugin Documentation](https://github.com/rhuss/cc-prose)
 
 ### 🎯 slidev
 
