@@ -42,7 +42,7 @@
         "repo": "rhuss/cc-spex"
       },
       "description": "Specification-Driven Development with Process Discipline for Claude Code",
-      "version": "3.0.0",
+      "version": "4.0.0",
       "author": {
         "name": "Roland Huß",
         "email": "rhuss@redhat.com"
