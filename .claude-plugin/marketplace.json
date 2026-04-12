@@ -38,8 +38,9 @@
     {
       "name": "spex",
       "source": {
-        "source": "github",
-        "repo": "rhuss/cc-spex"
+        "source": "git-subdir",
+        "url": "rhuss/cc-spex",
+        "path": "spex"
       },
       "description": "Specification-Driven Development with Process Discipline for Claude Code",
       "version": "4.0.0",
