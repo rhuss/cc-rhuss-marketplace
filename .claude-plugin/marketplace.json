@@ -41,8 +41,8 @@
         "source": "github",
         "repo": "rhuss/cc-spex"
       },
-      "description": "Specification-Driven Development with Process Discipline for Claude Code",
-      "version": "4.0.0",
+      "description": "Extend Spec-Kit with composable extensions and workflow commands for Claude Code",
+      "version": "5.1.0",
       "author": {
         "name": "Roland Huß",
         "email": "rhuss@redhat.com"
