@@ -38,8 +38,9 @@
     {
       "name": "spex",
       "source": {
-        "source": "github",
-        "repo": "rhuss/cc-spex"
+        "source": "git-subdir",
+        "url": "rhuss/cc-spex",
+        "path": "spex"
       },
       "description": "Extend Spec-Kit with composable extensions and workflow commands for Claude Code",
       "version": "5.1.0",
