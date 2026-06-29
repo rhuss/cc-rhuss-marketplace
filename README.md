@@ -61,6 +61,27 @@ Write natural, human-sounding prose with AI pattern detection, voice profiles, a
 
 [→ View Plugin Documentation](https://github.com/rhuss/cc-prose)
 
+### 🧠 memory
+
+Persistent, self-organizing memory for Claude Code. Detects cross-project patterns, forms higher-level concepts, tracks which knowledge is actively useful, and surfaces the right context at the right time.
+
+**How it works:**
+1. Memories accumulate per-project during normal Claude Code sessions
+2. A SessionEnd hook syncs changes to a memory vault, tracks activation, and detects staleness
+3. `/memory:distill` finds structural patterns across projects and forms named concepts
+4. Concepts surface in each project's MEMORY.md with context-aware hints
+5. `/memory:triage` provides inbox-zero cleanup of stale or questioned memories
+
+**Perfect for:**
+- Developers working across multiple projects who want knowledge transfer
+- Anyone whose memory files grow faster than they can review
+- Users who want their AI to learn from patterns spanning their whole workflow
+- Knowledge workers who want a browsable, searchable knowledge base in Obsidian
+
+**Note:** After installing via the marketplace, run `/memory:sync` once to verify the SessionEnd hook is registered. The skill checks hook health and offers to fix misconfigurations.
+
+[→ View Plugin Documentation](https://github.com/rhuss/cc-memory)
+
 ### 🎯 slidev
 
 Create developer-focused technical presentations using Slidev with enforced evidence-based design guardrails. Complete workflow from brainstorming to LaTeX handouts.

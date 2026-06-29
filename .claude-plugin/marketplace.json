@@ -90,6 +90,32 @@
       "category": "development"
     },
     {
+      "name": "memory",
+      "source": {
+        "source": "github",
+        "repo": "rhuss/cc-memory"
+      },
+      "description": "Persistent, self-organizing memory for Claude Code: cross-project pattern detection, concept formation, activation tracking, and Obsidian sync",
+      "version": "0.3.0",
+      "author": {
+        "name": "Roland Huß",
+        "email": "rhuss@redhat.com"
+      },
+      "keywords": [
+        "memory",
+        "knowledge-management",
+        "obsidian",
+        "concepts",
+        "distillation",
+        "activation-tracking",
+        "cross-project",
+        "lifecycle",
+        "sync",
+        "triage"
+      ],
+      "category": "development"
+    },
+    {
       "name": "slidev",
       "source": {
         "source": "github",
