@@ -1,0 +1,95 @@
+name: Sync spex pin to latest cc-spex release
+
+# Keeps .claude-plugin/marketplace.json's spex version in step with cc-spex.
+# When cc-spex publishes a newer tag *within the currently pinned major*, this
+# opens a PR bumping the pin. A new major (e.g. 6.x) is left for manual review,
+# so a breaking release is never auto-adopted.
+#
+# Prereq: Settings -> Actions -> General -> "Allow GitHub Actions to create and
+# approve pull requests" must be enabled for the PR step to work.
+
+on:
+  schedule:
+    - cron: '17 6 * * *'   # daily, 06:17 UTC
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync-spex:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve versions
+        id: v
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          manifest=.claude-plugin/marketplace.json
+
+          current=$(jq -r '.plugins[] | select(.name=="spex") | .version' "$manifest")
+          if [ -z "$current" ] || [ "$current" = "null" ]; then
+            echo "::error::no spex entry in $manifest"; exit 1
+          fi
+          major="${current%%.*}"
+
+          # Released semver tags on cc-spex (vX.Y.Z only; prereleases like -rc are excluded).
+          tags=$(gh api repos/rhuss/cc-spex/tags --paginate --jq '.[].name' \
+                   | sed 's/^v//' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' || true)
+
+          latest=$(printf '%s\n' "$tags" | awk -F. -v m="$major" '$1==m' | sort -V | tail -1)
+          newer_major=$(printf '%s\n' "$tags" | awk -F. -v m="$major" '$1>m' | sort -V | tail -1)
+
+          echo "current=$current"         >> "$GITHUB_OUTPUT"
+          echo "latest=$latest"           >> "$GITHUB_OUTPUT"
+
+          if [ -n "$newer_major" ]; then
+            echo "::notice::cc-spex v$newer_major is out (newer major than the pinned $current). Not auto-bumping across a major - update the pin manually after review."
+          fi
+
+          changed=false
+          if [ -n "$latest" ] && [ "$latest" != "$current" ]; then
+            top=$(printf '%s\n%s\n' "$current" "$latest" | sort -V | tail -1)
+            [ "$top" = "$latest" ] && changed=true   # only ever bump upward
+          fi
+          echo "changed=$changed" >> "$GITHUB_OUTPUT"
+
+      - name: Open bump PR
+        if: steps.v.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CURRENT: ${{ steps.v.outputs.current }}
+          LATEST: ${{ steps.v.outputs.latest }}
+        run: |
+          set -euo pipefail
+          manifest=.claude-plugin/marketplace.json
+          branch="auto/bump-spex-$LATEST"
+
+          # Idempotent: if a PR for this exact bump is already open, stop.
+          open=$(gh pr list --head "$branch" --state open --json number --jq 'length')
+          if [ "$open" != "0" ]; then
+            echo "PR for $branch already open; nothing to do."; exit 0
+          fi
+
+          tmp=$(mktemp)
+          jq --arg v "$LATEST" '(.plugins[] | select(.name=="spex") | .version) = $v' "$manifest" > "$tmp"
+          mv "$tmp" "$manifest"
+
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          git add "$manifest"
+          git commit -m "chore: bump spex pin $CURRENT -> $LATEST"
+          git push -f origin "$branch"
+
+          gh pr create --base main --head "$branch" \
+            --title "chore: bump spex pin to $LATEST" \
+            --body "Automated by \`.github/workflows/sync-spex-pin.yml\`.
+
+          cc-spex released **$LATEST** (same major as the current pin \`$CURRENT\`), but this marketplace still pins \`$CURRENT\`, so \`claude plugin update spex\` reports \"already at latest\" and never pulls it. This bumps the pin.
+
+          Same-major only: a new major (e.g. 6.x) is intentionally left for manual review."
