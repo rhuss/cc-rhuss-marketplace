@@ -38,8 +38,12 @@ jobs:
           major="${current%%.*}"
 
           # Released semver tags on cc-spex (vX.Y.Z only; prereleases like -rc are excluded).
-          tags=$(gh api repos/rhuss/cc-spex/tags --paginate --jq '.[].name' \
-                   | sed 's/^v//' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' || true)
+          # Split the API call from the filter: a gh api failure (rate limit / network / auth)
+          # now fails the step under `set -e` instead of silently yielding empty tags (which
+          # would report success while the pin quietly fell behind). `|| true` tolerates only
+          # the grep finding no matching tags.
+          raw=$(gh api repos/rhuss/cc-spex/tags --paginate --jq '.[].name')
+          tags=$(printf '%s\n' "$raw" | sed 's/^v//' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' || true)
 
           latest=$(printf '%s\n' "$tags" | awk -F. -v m="$major" '$1==m' | sort -V | tail -1)
           newer_major=$(printf '%s\n' "$tags" | awk -F. -v m="$major" '$1>m' | sort -V | tail -1)
