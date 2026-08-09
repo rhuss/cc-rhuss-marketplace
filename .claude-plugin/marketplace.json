@@ -147,6 +147,29 @@
         "design-enforcement"
       ],
       "category": "development"
+    },
+    {
+      "name": "handoff",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/rhuss/cc-handoff.git",
+        "path": "handoff"
+      },
+      "description": "Session handoff documents for seamless context pickup across sessions, with auto-handoff drafts and configurable notifications",
+      "version": "1.1.0",
+      "author": {
+        "name": "Roland Huß",
+        "email": "rhuss@redhat.com"
+      },
+      "keywords": [
+        "claude-code",
+        "plugin",
+        "session-handoff",
+        "context-preservation",
+        "auto-handoff",
+        "session-management"
+      ],
+      "category": "development"
     }
   ]
 }
