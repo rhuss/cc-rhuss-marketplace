@@ -82,6 +82,25 @@ Persistent, self-organizing memory for Claude Code. Detects cross-project patter
 
 [→ View Plugin Documentation](https://github.com/rhuss/cc-memory)
 
+### 🔄 handoff
+
+Session handoff documents for seamless context pickup across sessions. The agent writes narrative notes capturing decisions, unfinished work, and subtle context before a session ends, so the next session can pick up where you left off. Inspired by Steve Yegge's ["Anti-Clonking Device"](https://yegge.ai/essays/model-welfare) idea.
+
+**How it works:**
+1. Run `/handoff` at the end of a session
+2. The agent reflects and writes a narrative document (decisions, unfinished work, gotchas, next steps)
+3. Next session, a notification tells you handoffs are waiting
+4. Say "load handoff" to pick one, or "load latest" to skip selection
+
+**Key features:**
+- Configurable notifications: `proactive` (default), `passive`, or `quiet`
+- Auto-handoff drafts: agent proactively writes drafts during long sessions (`auto_handoff: true`)
+- Semantic filenames: `2026-08-06-telemetry-discussion.md` for easy browsing
+- Configurable retention for both pending and consumed handoffs
+- Tracks which files were worked on in each session
+
+[→ View Plugin Documentation](https://github.com/rhuss/cc-handoff)
+
 ### 🎯 slidev
 
 Create developer-focused technical presentations using Slidev with enforced evidence-based design guardrails. Complete workflow from brainstorming to LaTeX handouts.
