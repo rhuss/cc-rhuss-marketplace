@@ -43,7 +43,7 @@
         "path": "spex"
       },
       "description": "Specification-Driven Development with Process Discipline for Claude Code",
-      "version": "5.9.3",
+      "version": "6.2.0",
       "author": {
         "name": "Roland Huß",
         "email": "rhuss@redhat.com"
@@ -72,7 +72,7 @@
         "path": "prose"
       },
       "description": "Write natural, human-sounding prose with AI pattern detection, voice profiles, and style enforcement",
-      "version": "0.1.0",
+      "version": "1.1.0",
       "author": {
         "name": "Roland Huß",
         "email": "rhuss@redhat.com"
