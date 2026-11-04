@@ -42,6 +42,25 @@ Specification-Driven Development with Process Discipline for Claude Code. Refine
 
 [→ View Plugin Documentation](https://github.com/rhuss/cc-spex)
 
+### 🔍 cc-review
+
+Multi-agent code review with an autonomous fix loop. Specialized reviewers (correctness, architecture, security, production readiness, test quality, goal alignment) run in parallel next to external tools like CodeRabbit, Codex, Copilot and Greptile. A meta-review filters false positives and calibrates severities before anything reaches your code or the PR.
+
+**How it works:**
+1. Run `/cc-review:review` on your branch, or `--pr <n>` for a pull request
+2. Reviewers run in parallel; findings are merged, deduplicated and checked by the meta-review
+3. Critical and Important findings are fixed automatically, in up to three rounds by default
+4. With a PR, you can post the findings to it as review comments
+5. Use `/cc-review:triage` to handle bot and human comments on your own PRs, `/cc-review:inbox` to see what waits for you in a repository, and `/cc-review:issue` to assess new issues
+
+**Perfect for:**
+- Developers who want a thorough review before opening a PR
+- Maintainers reviewing many PRs (`--bulk` reviews every PR waiting for you)
+- Teams combining several AI review bots without duplicate noise
+- Projects that want custom reviewers as simple Markdown plugins
+
+[→ View Plugin Documentation](https://github.com/rhuss/cc-review)
+
 ### ✍️ prose
 
 Write natural, human-sounding prose with AI pattern detection, voice profiles, and style enforcement. Catches and removes 24 categories of AI writing indicators to produce authentic content.

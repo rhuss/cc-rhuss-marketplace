@@ -170,6 +170,30 @@
         "session-management"
       ],
       "category": "development"
+    },
+    {
+      "name": "cc-review",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/rhuss/cc-review.git",
+        "path": "review"
+      },
+      "description": "Multi-agent code review with autonomous fix loop, PR comment triage, bulk review, and a repository inbox",
+      "version": "1.4.0",
+      "author": {
+        "name": "Roland Huß",
+        "email": "rhuss@redhat.com"
+      },
+      "keywords": [
+        "claude-code",
+        "plugin",
+        "code-review",
+        "multi-agent",
+        "autonomous-fix",
+        "triage",
+        "pull-request"
+      ],
+      "category": "development"
     }
   ]
 }
