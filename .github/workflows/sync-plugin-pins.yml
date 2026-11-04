@@ -73,8 +73,17 @@ jobs:
           # The API call is separate from the filter: a gh api failure (rate
           # limit, network, auth) fails the step under `set -e` instead of
           # silently yielding no tags. `|| true` only tolerates grep finding
-          # no matching tags.
-          raw=$(gh api "repos/$REPO/tags" --paginate --jq '.[].name')
+          # no matching tags. A repository the workflow token cannot see
+          # (private, renamed, deleted) answers 404 and is skipped with a warning.
+          if ! raw=$(gh api "repos/$REPO/tags" --paginate --jq '.[].name' 2>api.err); then
+            if grep -q 'HTTP 404' api.err; then
+              echo "::warning::$REPO is not readable by this workflow (HTTP 404: private or missing); $PLUGIN stays pinned at $current."
+              echo "changed=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            cat api.err >&2
+            exit 1
+          fi
           tags=$(printf '%s\n' "$raw" | sed 's/^v//' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' || true)
           if [ -z "$tags" ]; then
             echo "::notice::$REPO has no vX.Y.Z release tags; $PLUGIN stays pinned at $current."
