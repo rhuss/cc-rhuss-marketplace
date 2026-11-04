@@ -70,8 +70,12 @@ jobs:
           major="${current%%.*}"
 
           # Released semver tags (vX.Y.Z only; prereleases like -rc are excluded).
-          tags=$(gh api "repos/$REPO/tags" --paginate --jq '.[].name' \
-                   | sed 's/^v//' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' || true)
+          # The API call is separate from the filter: a gh api failure (rate
+          # limit, network, auth) fails the step under `set -e` instead of
+          # silently yielding no tags. `|| true` only tolerates grep finding
+          # no matching tags.
+          raw=$(gh api "repos/$REPO/tags" --paginate --jq '.[].name')
+          tags=$(printf '%s\n' "$raw" | sed 's/^v//' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' || true)
           if [ -z "$tags" ]; then
             echo "::notice::$REPO has no vX.Y.Z release tags; $PLUGIN stays pinned at $current."
           fi
