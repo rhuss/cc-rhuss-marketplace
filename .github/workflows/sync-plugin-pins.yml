@@ -1,0 +1,132 @@
+name: Sync plugin pins to latest releases
+
+# Keeps the version of every plugin in .claude-plugin/marketplace.json in step
+# with its upstream GitHub repository's release tags. The plugin list is read
+# from the manifest, so a newly listed plugin is synced without editing this
+# file. When an upstream publishes a newer tag *within the currently pinned
+# major*, this opens a PR bumping the pin. A new major is left for manual
+# review, so a breaking release is never auto-adopted. Upstreams without vX.Y.Z
+# tags are reported and skipped.
+#
+# Prereq: Settings -> Actions -> General -> "Allow GitHub Actions to create and
+# approve pull requests" must be enabled for the PR step to work.
+
+on:
+  schedule:
+    - cron: '17 6 * * *'   # daily, 06:17 UTC
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  plugins:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.list.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: List plugins and their upstream repositories
+        id: list
+        run: |
+          set -euo pipefail
+          # source "github" names the repo directly; "git-subdir" and "url"
+          # sources carry a GitHub clone URL.
+          matrix=$(jq -c '[.plugins[]
+            | {plugin: .name,
+               repo: (if .source.source == "github" then .source.repo
+                      else (.source.url // "" | capture("github\\.com[/:](?<r>[^/]+/[^/]+?)(\\.git)?/?$").r // "")
+                      end)}
+            | select(.repo != "")]' .claude-plugin/marketplace.json)
+          echo "Plugins: $matrix"
+          echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
+
+  sync:
+    needs: plugins
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.plugins.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve versions
+        id: v
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PLUGIN: ${{ matrix.plugin }}
+          REPO: ${{ matrix.repo }}
+        run: |
+          set -euo pipefail
+          manifest=.claude-plugin/marketplace.json
+
+          current=$(jq -r --arg p "$PLUGIN" '.plugins[] | select(.name==$p) | .version' "$manifest")
+          if [ -z "$current" ] || [ "$current" = "null" ]; then
+            echo "::error::no version for $PLUGIN in $manifest"; exit 1
+          fi
+          major="${current%%.*}"
+
+          # Released semver tags (vX.Y.Z only; prereleases like -rc are excluded).
+          tags=$(gh api "repos/$REPO/tags" --paginate --jq '.[].name' \
+                   | sed 's/^v//' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' || true)
+          if [ -z "$tags" ]; then
+            echo "::notice::$REPO has no vX.Y.Z release tags; $PLUGIN stays pinned at $current."
+          fi
+
+          latest=$(printf '%s\n' "$tags" | awk -F. -v m="$major" '$1==m' | sort -V | tail -1)
+          newer_major=$(printf '%s\n' "$tags" | awk -F. -v m="$major" '$1>m' | sort -V | tail -1)
+
+          echo "current=$current"         >> "$GITHUB_OUTPUT"
+          echo "latest=$latest"           >> "$GITHUB_OUTPUT"
+
+          if [ -n "$newer_major" ]; then
+            echo "::notice::$REPO v$newer_major is out (newer major than the pinned $current). Not auto-bumping across a major - update the $PLUGIN pin manually after review."
+          fi
+
+          changed=false
+          if [ -n "$latest" ] && [ "$latest" != "$current" ]; then
+            top=$(printf '%s\n%s\n' "$current" "$latest" | sort -V | tail -1)
+            [ "$top" = "$latest" ] && changed=true   # only ever bump upward
+          fi
+          echo "changed=$changed" >> "$GITHUB_OUTPUT"
+
+      - name: Open bump PR
+        if: steps.v.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PLUGIN: ${{ matrix.plugin }}
+          REPO: ${{ matrix.repo }}
+          CURRENT: ${{ steps.v.outputs.current }}
+          LATEST: ${{ steps.v.outputs.latest }}
+        run: |
+          set -euo pipefail
+          manifest=.claude-plugin/marketplace.json
+          branch="auto/bump-$PLUGIN-$LATEST"
+
+          # Idempotent: if a PR for this exact bump is already open, stop.
+          open=$(gh pr list --head "$branch" --state open --json number --jq 'length')
+          if [ "$open" != "0" ]; then
+            echo "PR for $branch already open; nothing to do."; exit 0
+          fi
+
+          tmp=$(mktemp)
+          jq --indent 2 --arg p "$PLUGIN" --arg v "$LATEST" '(.plugins[] | select(.name==$p) | .version) = $v' "$manifest" > "$tmp"
+          mv "$tmp" "$manifest"
+
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          git add "$manifest"
+          git commit -m "chore: bump $PLUGIN pin $CURRENT -> $LATEST"
+          git push -f origin "$branch"
+
+          gh pr create --base main --head "$branch" \
+            --title "chore: bump $PLUGIN pin to $LATEST" \
+            --body "Automated by \`.github/workflows/sync-plugin-pins.yml\`.
+
+          $REPO released **$LATEST** (same major as the current pin \`$CURRENT\`), but this marketplace still pins \`$CURRENT\`, so \`claude plugin update $PLUGIN\` reports \"already at latest\" and never pulls it. This bumps the pin.
+
+          Same-major only: a new major is intentionally left for manual review."
