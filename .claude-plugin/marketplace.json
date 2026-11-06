@@ -179,7 +179,7 @@
         "path": "review"
       },
       "description": "Multi-agent code review with autonomous fix loop, PR comment triage, bulk review, and a repository inbox",
-      "version": "1.4.0",
+      "version": "1.5.0",
       "author": {
         "name": "Roland Huß",
         "email": "rhuss@redhat.com"
