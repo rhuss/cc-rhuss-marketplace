@@ -43,7 +43,7 @@
         "path": "spex"
       },
       "description": "Specification-Driven Development with Process Discipline for Claude Code",
-      "version": "6.2.0",
+      "version": "6.2.2",
       "author": {
         "name": "Roland Huß",
         "email": "rhuss@redhat.com"
