@@ -61,6 +61,21 @@ Multi-agent code review with an autonomous fix loop. Specialized reviewers (corr
 
 [→ View Plugin Documentation](https://github.com/rhuss/cc-review)
 
+### 🐕 cc-roundup
+
+Round up stray agent sessions. After days of work, Corgi workspaces fill up with finished sessions nobody closed, agents waiting on an answer you forgot, and drafts copied to the clipboard but never pasted. cc-roundup walks through every open top-level session, recaps what each one was about, and proposes the step that closes the thread.
+
+**How it works:**
+1. Run `/cc-roundup:roundup` from an agent in a Corgi pane
+2. A read-only gathering step snapshots every open session: recent turns, git state, PR state, clipboard copies
+3. Sessions are sorted into *waiting on you*, *stale, decide*, *waiting on others* and *done, close it*, each with a one-line reason
+4. You confirm closing the finished panes as one batch, then follow-up messages and clipboard copy-backs one by one
+5. Nothing runs without your confirmation, and closed conversations stay resumable from `corgi history`
+
+**Status:** in development. Requires a running [Corgi](https://github.com/tals/corgi) runtime.
+
+[→ View Plugin Documentation](https://github.com/rhuss/cc-roundup)
+
 ### ✍️ prose
 
 Write natural, human-sounding prose with AI pattern detection, voice profiles, and style enforcement. Catches and removes 24 categories of AI writing indicators to produce authentic content.
