@@ -156,6 +156,26 @@ Create developer-focused technical presentations using Slidev with enforced evid
 
 [→ View Plugin Documentation](https://github.com/rhuss/cc-slidev)
 
+### 🎤 cfp
+
+Draft conference talk proposals (CFP submissions) and speaker bios interactively, using reusable conference profiles. Ships with a KubeCon + CloudNativeCon profile built from the public CFP pages, the reviewer rubric, and the hard rules.
+
+**How it works:**
+1. Set up the proposal store with `/cfp:init`
+2. Run `/cfp:draft` from an idea, existing material, or an earlier proposal
+3. A story interview turns the idea into a conference-independent talk
+4. Every form field is drafted, then scored by a simulated program committee in a review loop
+5. A voice pass, a pre-flight rule check, and a paste view with character counts finish the proposal
+
+Nothing is ever submitted for you: you paste the texts into the conference site yourself.
+
+**Perfect for:**
+- Speakers submitting the same talk to several conferences
+- First-time KubeCon submitters who want the rubric and hard rules applied up front
+- Anyone keeping talks, proposals, and bios as plain markdown (for example in Obsidian)
+
+[→ View Plugin Documentation](https://github.com/rhuss/cc-cfp)
+
 ## Installation
 
 **Step 1:** Add this marketplace to Claude Code:

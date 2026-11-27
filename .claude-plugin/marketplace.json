@@ -218,6 +218,31 @@
         "session-management"
       ],
       "category": "development"
+    },
+    {
+      "name": "cfp",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/rhuss/cc-cfp.git",
+        "path": "cfp"
+      },
+      "description": "Draft conference talk proposals (CFP submissions) and speaker bios interactively, using reusable conference profiles. Ships with a KubeCon + CloudNativeCon profile.",
+      "version": "0.1.1",
+      "author": {
+        "name": "Roland Huß",
+        "email": "rhuss@redhat.com"
+      },
+      "keywords": [
+        "claude-code",
+        "plugin",
+        "cfp",
+        "conference",
+        "talk-proposal",
+        "speaker-bio",
+        "kubecon",
+        "program-committee"
+      ],
+      "category": "productivity"
     }
   ]
 }
